@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Canvas RAW vs PNG Compare (Session + Last Session)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg:#ffffff; --ink:#111111; --card:#ffffff; --muted:#6b7280; --accent:#2563eb;
+      --ok:#16a34a; --warn:#f59e0b; --err:#ef4444;
+      --border:#e5e7eb; --border-hover:#cbd5e1; --surface:#f8fafc;
+    }
+    html,body{ margin:0; background:var(--bg); color:var(--ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif }
+    .wrap{max-width:1080px;margin:0 auto;padding:16px}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    button{ padding:10px 14px; border:1px solid var(--border); background:#fff;
+      color:var(--ink); border-radius:10px; cursor:pointer }
+    button:hover{border-color:var(--border-hover);background:var(--surface)}
+    #summary{background:var(--surface);border:1px solid var(--border);
+      border-radius:10px;padding:12px;margin:12px 0}
+    pre{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+      padding:12px;overflow:auto;max-height:50vh}
+    #canvas-root{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+    .item{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border);
+      border-radius:10px;padding:10px;background:#fff}
+    .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+    .label{font-size:12px;color:var(--muted)}
+    canvas{border:1px solid var(--border);border-radius:8px;background:#fff}
+    .stat{font-size:12px}
+    .note{color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <button id="btn-run">Run Compare</button>
+      <button id="btn-clear-last">Clear Last Session</button>
+      <span class="label">Stores RAW & PNG pixels locally and compares with last session if available.</span>
+    </div>
+
+    <div id="summary">Summary will appear here.</div>
+    <pre id="output">(details)</pre>
+
+    <h3>Per Image View</h3>
+    <div id="canvas-root"></div>
+
+    <p class="note">
+      Persistence is client-side via localStorage key <code>pp_last_pixels_v2</code>.
+    </p>
+  </div>
+
+  <script type="module" src="./compare_png.js"></script>
+</body>
+</html>
