@@ -364,6 +364,22 @@ async function runCompare() {
         .map((e) => `${e.dev}:${e.pct.toFixed(2)}%`)
         .join(", ");
 
+      // NEW: unique dev_abs patterns [|dr|,|dg|,|db|,|da|] for this image
+      const uniqueDevAbsSet = new Set();
+      for (const delta of Object.values(r.changedMap)) {
+        const [sdr, sdg, sdb, sda] = delta;
+        const key = [
+          Math.abs(sdr),
+          Math.abs(sdg),
+          Math.abs(sdb),
+          Math.abs(sda),
+        ].join(",");
+        uniqueDevAbsSet.add(key);
+      }
+      const uniqueDevAbs = Array.from(uniqueDevAbsSet).map(k =>
+        k.split(",").map(Number)
+      );
+
       report[name] = {
         totalPixels: r.totalPixels,
         changedPixels: r.changedPixels,
@@ -374,6 +390,7 @@ async function runCompare() {
         hasAlphaChange: r.hasAlphaChange,
         deviationDistribution: r.deviationDistribution,
         allDeviationSummary: allDevPct,
+        uniqueDevAbs,              // NEW: array of dev_abs patterns
         sample: r.sample,
       };
 
@@ -454,6 +471,17 @@ async function runCompare() {
 
     // NEW: detailed list of pixels with variable delta patterns (per image)
     logVariableDeltaPixels(hist, /* limitPerImage */ 200);
+
+    // NEW: per-image unique dev_abs patterns for this run
+    console.group("[Current run] unique dev_abs patterns per image");
+    for (const [name, rec] of Object.entries(report)) {
+      if (!rec || !rec.uniqueDevAbs) continue;
+      console.log(
+        `Image: ${name}, unique dev_abs count=${rec.uniqueDevAbs.length}, patterns=`,
+        rec.uniqueDevAbs
+      );
+    }
+    console.groupEnd();
 
     // Also dump detailed per-image deviation summaries for current run
     for (const [name, rec] of Object.entries(report)) {
